@@ -52,4 +52,12 @@
       <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="vShader.hlsl">
+      <Filter>Файлы ресурсов</Filter>
+    </FxCompile>
+    <FxCompile Include="pShader.hlsl">
+      <Filter>Файлы ресурсов</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

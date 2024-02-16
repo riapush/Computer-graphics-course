@@ -2,6 +2,8 @@
 
 #include <d3d11.h>
 #include <dxgi.h>
+#include <directxmath.h>
+#include <string>
 
 struct Vertex {
 	float x, y, z;
@@ -16,6 +18,11 @@ private:
 	IDXGISwapChain* m_pSwapChain = nullptr;
 	ID3D11RenderTargetView* m_pBackBufferRTV = nullptr;
 	ID3D11Buffer* m_pVertexBuffer = nullptr;
+	ID3D11Buffer* m_pIndexBuffer = nullptr;
+	ID3D11VertexShader* m_pVertexShader = nullptr;
+	ID3D11PixelShader* m_pPixelShader = nullptr;
+
+	ID3D11InputLayout* m_pInputLayout = nullptr;
 	UINT m_width = 0;
 	UINT m_height = 0;
 
