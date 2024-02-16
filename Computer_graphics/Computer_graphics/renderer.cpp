@@ -21,6 +21,34 @@ HRESULT Renderer::setupBackBuffer() {
     return hr;
 }
 
+HRESULT Renderer::initScene() {
+    HRESULT hr = S_OK;
+
+    static const Vertex Vertices[] = {
+          {-0.5f, -0.5f, 0.0f, RGB(255, 0, 0)},
+          { 0.5f, -0.5f, 0.0f, RGB(0, 255, 0)},
+          { 0.0f,  0.5f, 0.0f, RGB(0, 0, 255)}
+    };
+
+    if (SUCCEEDED(hr)) {
+        D3D11_BUFFER_DESC desc = {};
+        desc.ByteWidth = sizeof(Vertices);
+        desc.Usage = D3D11_USAGE_IMMUTABLE;
+        desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        desc.CPUAccessFlags = 0;
+        desc.MiscFlags = 0;
+        desc.StructureByteStride = 0;
+
+        D3D11_SUBRESOURCE_DATA data;
+        data.pSysMem = &Vertices;
+        data.SysMemPitch = sizeof(Vertices);
+        data.SysMemSlicePitch = 0;
+
+        hr = m_pDevice->CreateBuffer(&desc, &data, &m_pVertexBuffer);
+        assert(SUCCEEDED(hr));
+    }
+}
+
 bool Renderer::deviceInit(HWND hWnd) {
 
     HRESULT hr;
