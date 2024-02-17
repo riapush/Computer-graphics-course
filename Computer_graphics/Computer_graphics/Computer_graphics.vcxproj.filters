@@ -53,11 +53,11 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="vShader.hlsl">
+    <None Include="pShader.hlsl">
       <Filter>Файлы ресурсов</Filter>
-    </FxCompile>
-    <FxCompile Include="pShader.hlsl">
+    </None>
+    <None Include="vShader.hlsl">
       <Filter>Файлы ресурсов</Filter>
-    </FxCompile>
+    </None>
   </ItemGroup>
 </Project>
