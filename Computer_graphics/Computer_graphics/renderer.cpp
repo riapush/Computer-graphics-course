@@ -100,8 +100,6 @@ HRESULT Renderer::initScene() {
     SAFE_RELEASE(pShaderBuffer);
 
     return hr;
-
-    return E_NOTIMPL;
 }
 
 bool Renderer::deviceInit(HWND hWnd) {
