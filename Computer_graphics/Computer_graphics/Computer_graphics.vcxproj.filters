@@ -52,4 +52,12 @@
       <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="pShader.hlsl">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="vShader.hlsl">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+  </ItemGroup>
 </Project>
