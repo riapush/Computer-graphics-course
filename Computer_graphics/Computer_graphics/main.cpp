@@ -67,10 +67,8 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow) {
     }
 
     ShowWindow(hWnd, nCmdShow);
-
     SetForegroundWindow(hWnd);
     SetFocus(hWnd);
-
     UpdateWindow(hWnd);
 
     {
@@ -92,7 +90,7 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow) {
         return E_FAIL;
     }
 
-    return TRUE;
+    return S_OK;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
