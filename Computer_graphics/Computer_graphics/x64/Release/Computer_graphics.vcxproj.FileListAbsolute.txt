@@ -1,2 +1,0 @@
-D:\Git\GitHub\Computer-graphics-course\Computer_graphics\x64\Release\pShader.hlsl
-D:\Git\GitHub\Computer-graphics-course\Computer_graphics\x64\Release\vShader.hlsl
