@@ -36,19 +36,23 @@ XMFLOAT3 Input::getMouseState() {
         m_mouseState.y - prevMouseState.y, 
         m_mouseState.z - prevMouseState.z);
 
-    if (GetAsyncKeyState(VK_RBUTTON) && 0x80) {
+    BYTE keyState[256];
+    GetKeyboardState(keyState);
+
+    if (keyState[VK_UP] & 0x80) {
         mouseDelta.z = 1.0f;
         return mouseDelta;
     }
         
-    if (GetAsyncKeyState(VK_MBUTTON) && 0x80) {
+    if (keyState[VK_DOWN] & 0x80) {
         mouseDelta.z = -1.0f;
         return mouseDelta;
     }
 
-    if (GetAsyncKeyState(VK_LBUTTON) && 0x80)
+    if (keyState[VK_LBUTTON] & 0x80)
         return mouseDelta;
     return XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 }
 
 void Input::resize(int screenW, int screenH) {

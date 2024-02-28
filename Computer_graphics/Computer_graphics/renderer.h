@@ -46,7 +46,6 @@ private:
 	void inputMovement();
 
 public:
-	bool deviceInit(HWND hWnd);
 	bool render();
 	void deviceCleanup();
 	bool winResize(UINT width, UINT height);
