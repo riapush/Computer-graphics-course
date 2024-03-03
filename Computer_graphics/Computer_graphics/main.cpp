@@ -60,7 +60,7 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow) {
     return E_FAIL;
 
   g_hInst = hInstance;
-  HWND hWnd = CreateWindow(L"WindowClass", L"Kozhevnikova D.G.",
+  HWND hWnd = CreateWindow(L"WindowClass", L"Rubanova Valeria 5030102/00201",
     WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr,
     nullptr, hInstance, nullptr);
   if (!hWnd) {
