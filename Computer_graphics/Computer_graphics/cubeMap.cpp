@@ -215,7 +215,7 @@ CubeMap::CubeMap(ID3D11Device * device, ID3D11DeviceContext * context, int scree
   }
 
   if (SUCCEEDED(hr)) {
-    CreateDDSTextureFromFileEx(device, context, L"pattern.dds",
+    CreateDDSTextureFromFileEx(device, context, L"forest.dds",
       0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE,
       false, nullptr, &m_pTexture);
   }

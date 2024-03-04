@@ -1,4 +1,4 @@
-Texture2D colorTexture : register(t0);
+TextureCube colorTexture : register(t0);
 SamplerState colorSampler : register(s0);
 
 struct PS_INPUT {
