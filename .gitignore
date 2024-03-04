@@ -18,3 +18,7 @@ Computer_graphics/.vs/Computer_graphics/v16/.suo
 *.recipe
 *.cso
 
+Computer_graphics/x64/
+Computer_graphics/x64/Debug/
+Computer_graphics/x64/Release/
+Computer_graphics/Computer_graphics/x64/
