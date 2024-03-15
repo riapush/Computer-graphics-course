@@ -97,5 +97,11 @@
     <FxCompile Include="CubeMapVertexShader.hlsl">
       <Filter>Файлы ресурсов</Filter>
     </FxCompile>
+    <FxCompile Include="TransPixelShader.hlsl">
+      <Filter>Файлы ресурсов</Filter>
+    </FxCompile>
+    <FxCompile Include="TransVertexShader.hlsl">
+      <Filter>Файлы ресурсов</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
