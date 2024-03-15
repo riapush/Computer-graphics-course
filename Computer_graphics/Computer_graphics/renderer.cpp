@@ -98,66 +98,66 @@ HRESULT Renderer::initScene() {
         20, 22, 21, 20, 23, 22
   };
 
-  static const D3D11_INPUT_ELEMENT_DESC InputDesc[] = {
+    static const D3D11_INPUT_ELEMENT_DESC InputDesc[] = {
     {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
     {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0} };
 
 
   if (SUCCEEDED(hr)) {
-    D3D11_BUFFER_DESC desc = {};
-    desc.ByteWidth = sizeof(Vertices);
-    desc.Usage = D3D11_USAGE_IMMUTABLE;
-    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    desc.CPUAccessFlags = 0;
-    desc.MiscFlags = 0;
-    desc.StructureByteStride = 0;
+      D3D11_BUFFER_DESC desc = {};
+      desc.ByteWidth = sizeof(Vertices);
+      desc.Usage = D3D11_USAGE_IMMUTABLE;
+      desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+      desc.CPUAccessFlags = 0;
+      desc.MiscFlags = 0;
+      desc.StructureByteStride = 0;
 
-    D3D11_SUBRESOURCE_DATA data;
-    data.pSysMem = &Vertices;
-    data.SysMemPitch = sizeof(Vertices);
-    data.SysMemSlicePitch = 0;
+      D3D11_SUBRESOURCE_DATA data;
+      data.pSysMem = &Vertices;
+      data.SysMemPitch = sizeof(Vertices);
+      data.SysMemSlicePitch = 0;
 
-    hr = m_pDevice->CreateBuffer(&desc, &data, &m_pVertexBuffer);
-    assert(SUCCEEDED(hr));
+      hr = m_pDevice->CreateBuffer(&desc, &data, &m_pVertexBuffer);
+      assert(SUCCEEDED(hr));
   }
 
   if (SUCCEEDED(hr)) {
-    D3D11_BUFFER_DESC desc = {};
-    desc.ByteWidth = sizeof(Indices);
-    desc.Usage = D3D11_USAGE_IMMUTABLE;
-    desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    desc.CPUAccessFlags = 0;
-    desc.MiscFlags = 0;
-    desc.StructureByteStride = 0;
+      D3D11_BUFFER_DESC desc = {};
+      desc.ByteWidth = sizeof(Indices);
+      desc.Usage = D3D11_USAGE_IMMUTABLE;
+      desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+      desc.CPUAccessFlags = 0;
+      desc.MiscFlags = 0;
+      desc.StructureByteStride = 0;
 
-    D3D11_SUBRESOURCE_DATA data;
-    data.pSysMem = &Indices;
-    data.SysMemPitch = sizeof(Indices);
-    data.SysMemSlicePitch = 0;
+      D3D11_SUBRESOURCE_DATA data;
+      data.pSysMem = &Indices;
+      data.SysMemPitch = sizeof(Indices);
+      data.SysMemSlicePitch = 0;
 
-    hr = m_pDevice->CreateBuffer(&desc, &data, &m_pIndexBuffer);
-    assert(SUCCEEDED(hr));
+      hr = m_pDevice->CreateBuffer(&desc, &data, &m_pIndexBuffer);
+      assert(SUCCEEDED(hr));
   }
     
   ID3D10Blob* vShaderBuffer = nullptr;
   ID3D10Blob* pShaderBuffer = nullptr;
 
   int flags = 0;
-  #ifdef _DEBUG
-    flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-  #endif
-  
+#ifdef _DEBUG
+  flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
   if (SUCCEEDED(hr)) {
-    hr = D3DCompileFromFile(L"vShader.hlsl", NULL, NULL, "main", "vs_5_0", flags, 0, &vShaderBuffer, NULL);
-    hr = m_pDevice->CreateVertexShader(vShaderBuffer->GetBufferPointer(), vShaderBuffer->GetBufferSize(), NULL, &m_pVertexShader);
+      hr = D3DCompileFromFile(L"vShader.hlsl", NULL, NULL, "main", "vs_5_0", flags, 0, &vShaderBuffer, NULL);
+      hr = m_pDevice->CreateVertexShader(vShaderBuffer->GetBufferPointer(), vShaderBuffer->GetBufferSize(), NULL, &m_pVertexShader);
   }
   if (SUCCEEDED(hr)) {
-    hr = D3DCompileFromFile(L"pShader.hlsl", NULL, NULL, "main", "ps_5_0", flags, 0, &pShaderBuffer, NULL);
-    hr = m_pDevice->CreatePixelShader(pShaderBuffer->GetBufferPointer(), pShaderBuffer->GetBufferSize(), NULL, &m_pPixelShader);
+      hr = D3DCompileFromFile(L"pShader.hlsl", NULL, NULL, "main", "ps_5_0", flags, 0, &pShaderBuffer, NULL);
+      hr = m_pDevice->CreatePixelShader(pShaderBuffer->GetBufferPointer(), pShaderBuffer->GetBufferSize(), NULL, &m_pPixelShader);
   }
   if (SUCCEEDED(hr)) {
-    int numElements = sizeof(InputDesc) / sizeof(InputDesc[0]);
-    hr = m_pDevice->CreateInputLayout(InputDesc, numElements, vShaderBuffer->GetBufferPointer(), vShaderBuffer->GetBufferSize(), &m_pInputLayout);
+      int numElements = sizeof(InputDesc) / sizeof(InputDesc[0]);
+      hr = m_pDevice->CreateInputLayout(InputDesc, numElements, vShaderBuffer->GetBufferPointer(), vShaderBuffer->GetBufferSize(), &m_pInputLayout);
   }
 
   SAFE_RELEASE(vShaderBuffer);
@@ -186,40 +186,40 @@ HRESULT Renderer::initScene() {
       assert(SUCCEEDED(hr));
   }
   if (SUCCEEDED(hr)) {
-    D3D11_BUFFER_DESC desc = {};
-    desc.ByteWidth = sizeof(SceneMatrixBuffer);
-    desc.Usage = D3D11_USAGE_DYNAMIC;
-    desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    desc.MiscFlags = 0;
-    desc.StructureByteStride = 0;
+      D3D11_BUFFER_DESC desc = {};
+      desc.ByteWidth = sizeof(SceneMatrixBuffer);
+      desc.Usage = D3D11_USAGE_DYNAMIC;
+      desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+      desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+      desc.MiscFlags = 0;
+      desc.StructureByteStride = 0;
 
-    hr = m_pDevice->CreateBuffer(&desc, nullptr, &m_pSceneMatrixBuffer);
-    assert(SUCCEEDED(hr));
+      hr = m_pDevice->CreateBuffer(&desc, nullptr, &m_pSceneMatrixBuffer);
+      assert(SUCCEEDED(hr));
   }
 
   if (SUCCEEDED(hr)) {
-    D3D11_RASTERIZER_DESC desc = {};
-    desc.AntialiasedLineEnable = false;
-    desc.FillMode = D3D11_FILL_SOLID;
-    desc.CullMode = D3D11_CULL_BACK;
-    desc.DepthBias = 0;
-    desc.DepthBiasClamp = 0.0f;
-    desc.FrontCounterClockwise = false;
-    desc.DepthClipEnable = true;
-    desc.ScissorEnable = false;
-    desc.MultisampleEnable = false;
-    desc.SlopeScaledDepthBias = 0.0f;
+      D3D11_RASTERIZER_DESC desc = {};
+      desc.AntialiasedLineEnable = false;
+      desc.FillMode = D3D11_FILL_SOLID;
+      desc.CullMode = D3D11_CULL_BACK;
+      desc.DepthBias = 0;
+      desc.DepthBiasClamp = 0.0f;
+      desc.FrontCounterClockwise = false;
+      desc.DepthClipEnable = true;
+      desc.ScissorEnable = false;
+      desc.MultisampleEnable = false;
+      desc.SlopeScaledDepthBias = 0.0f;
 
-    hr = m_pDevice->CreateRasterizerState(&desc, &m_pRasterizerState);
-    assert(SUCCEEDED(hr));
+      hr = m_pDevice->CreateRasterizerState(&desc, &m_pRasterizerState);
+      assert(SUCCEEDED(hr));
   }
 
   try {
-    m_textureArray.emplace_back(m_pDevice, m_pDeviceContext, L"heart.dds");
+      m_textureArray.emplace_back(m_pDevice, m_pDeviceContext, L"heart.dds");
   }
   catch (...) {
-    return E_FAIL;
+      return E_FAIL;
   }
 
   if (SUCCEEDED(hr)) {
