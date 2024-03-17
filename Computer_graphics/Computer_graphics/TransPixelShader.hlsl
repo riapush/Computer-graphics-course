@@ -1,15 +1,15 @@
-cbuffer WorldBuffer : register (b0)
+cbuffer WorldMatrixBuffer : register(b0)
 {
-    float4x4 world;
+    float4x4 worldMatrix;
     float4 color;
 };
 
-struct VSOutput
+struct PS_INPUT
 {
-    float4 position : SV_Position;
+    float4 position : SV_POSITION;
 };
 
-float4 main(VSOutput input) : SV_Target0
+float4 main(PS_INPUT input) : SV_TARGET
 {
-     return color;
+    return float4(color.xyz, 0.3f);
 }

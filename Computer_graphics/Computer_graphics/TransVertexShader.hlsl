@@ -1,28 +1,29 @@
-cbuffer WorldBuffer : register (b0)
+cbuffer WorldMatrixBuffer : register(b0)
 {
-	float4x4 world;
-	float4 color;
+    float4x4 worldMatrix;
+    float4 color;
 };
 
-cbuffer SceneBuffer : register (b1)
+cbuffer SceneMatrixBuffer : register(b1)
 {
-	float4x4 viewProj;
+    float4x4 viewProjectionMatrix;
 };
 
-struct VSInput
+struct VS_INPUT
 {
-	float3 position : POSITION;
+    float4 position : POSITION;
 };
 
-struct VSOutput
+struct PS_INPUT
 {
-	float4 position : SV_Position;
+    float4 position : SV_POSITION;
 };
 
-VSOutput main(VSInput input)
+PS_INPUT main(VS_INPUT input)
 {
-	VSOutput output;
-	output.position = mul(viewProj, mul(world, float4(input.position, 1.0f)));
+    PS_INPUT output;
 
-	return output;
+    output.position = mul(viewProjectionMatrix, mul(worldMatrix, input.position));
+
+    return output;
 }

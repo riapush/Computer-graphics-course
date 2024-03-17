@@ -538,14 +538,49 @@ bool Renderer::getState() {
     m_pDeviceContext->UpdateSubresource(m_pWorldMatrixBuffer1, 0, NULL, &wmb, 0, 0);
 
 
-    TransparentWorldBuffer transparentWorldBuffer;
-    transparentWorldBuffer.worldMatrix = DirectX::XMMatrixTranslation(0.0f, 0.0f, -0.1f);
-    transparentWorldBuffer.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.5f, 0.5f);
-    m_pDeviceContext->UpdateSubresource(m_pTransparentWorldBuffer, 0, NULL, &transparentWorldBuffer, 0, 0);
+    float moveSpeed = 0.05f;
+    static float movement1 = 0.0f;
+    static bool moveForward1 = true;
 
-    transparentWorldBuffer.worldMatrix = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.1f);
-    transparentWorldBuffer.color = DirectX::XMFLOAT4(0.0f, 0.6f, 1.0f, 0.5f);
-    m_pDeviceContext->UpdateSubresource(m_pTransparentWorldBuffer1, 0, NULL, &transparentWorldBuffer, 0, 0);
+    if (moveForward1) {
+        movement1 += moveSpeed;
+        if (movement1 >= 1.0f) {
+            moveForward1 = false;
+        }
+    }
+    else {
+        movement1 -= moveSpeed;
+        if (movement1 <= -1.0f) {
+            moveForward1 = true;
+        }
+    }
+
+        TransparentWorldBuffer transparentWorldBuffer1;
+        transparentWorldBuffer1.worldMatrix = DirectX::XMMatrixTranslation(movement1, 0.0f, -0.1f);
+        transparentWorldBuffer1.color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.5f, 0.5f);
+        m_pDeviceContext->UpdateSubresource(m_pTransparentWorldBuffer, 0, NULL, &transparentWorldBuffer1, 0, 0);
+
+        float moveSpeed2 = 0.05f;
+        static float movement2 = 0.0f;
+        static bool moveForward2 = true;
+
+        if (moveForward2) {
+            movement2 += moveSpeed2;
+            if (movement2 >= 1.0f) {
+                moveForward2 = false;
+            }
+        }
+        else {
+            movement2 -= moveSpeed2;
+            if (movement2 <= -1.0f) {
+                moveForward2 = true;
+            }
+        }
+
+            TransparentWorldBuffer transparentWorldBuffer2;
+            transparentWorldBuffer2.worldMatrix = DirectX::XMMatrixTranslation(movement2, 0.0f, 0.1f);
+            transparentWorldBuffer2.color = DirectX::XMFLOAT4(0.0f, 0.6f, 1.0f, 0.5f);
+            m_pDeviceContext->UpdateSubresource(m_pTransparentWorldBuffer1, 0, NULL, &transparentWorldBuffer2, 0, 0);
 
 
     XMMATRIX mView;
