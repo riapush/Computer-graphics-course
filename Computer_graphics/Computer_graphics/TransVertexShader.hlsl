@@ -1,29 +1,27 @@
-cbuffer WorldMatrixBuffer : register(b0)
+#include "sceneBuffer.hlsli"
+
+cbuffer WorldBuffer : register (b0)
 {
-    float4x4 worldMatrix;
-    float4 color;
+	float4x4 world;
+	float4 color;
 };
 
-cbuffer SceneMatrixBuffer : register(b1)
+struct VSInput
 {
-    float4x4 viewProjectionMatrix;
+	float3 position : POSITION;
 };
 
-struct VS_INPUT
+struct VSOutput
 {
-    float4 position : POSITION;
+	float4 position : SV_Position;
+	float4 worldPos : POSITION;
 };
 
-struct PS_INPUT
+VSOutput main(VSInput input)
 {
-    float4 position : SV_POSITION;
-};
+	VSOutput output;
+	output.worldPos = mul(world, float4(input.position, 1.0f));
+	output.position = mul(viewProj, output.worldPos);
 
-PS_INPUT main(VS_INPUT input)
-{
-    PS_INPUT output;
-
-    output.position = mul(viewProjectionMatrix, mul(worldMatrix, input.position));
-
-    return output;
+	return output;
 }
