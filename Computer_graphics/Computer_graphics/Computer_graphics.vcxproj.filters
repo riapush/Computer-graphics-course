@@ -45,6 +45,12 @@
     <ClInclude Include="utils.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="lights.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DInclude.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -68,6 +74,12 @@
     <ClCompile Include="cubeMap.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="lights.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DInclude.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Computer_graphics.rc">
@@ -87,6 +99,12 @@
       <Filter>Файлы ресурсов</Filter>
     </None>
     <None Include="vShader.hlsl">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="calcLight.hlsli">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="sceneBuffer.hlsli">
       <Filter>Файлы ресурсов</Filter>
     </None>
   </ItemGroup>
