@@ -170,24 +170,26 @@ HRESULT Renderer::initScene() {
 
     if (SUCCEEDED(hr)) {
         D3D11_BUFFER_DESC desc = {};
-        desc.ByteWidth = sizeof(WorldMatrixBuffer);
+        desc.ByteWidth = sizeof(GeomMatrixBuffer) * 100;
         desc.Usage = D3D11_USAGE_DEFAULT;
         desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
         desc.CPUAccessFlags = 0;
         desc.MiscFlags = 0;
         desc.StructureByteStride = 0;
 
-        WorldMatrixBuffer worldMatrixBuffer;
-        worldMatrixBuffer.mWorldMatrix = DirectX::XMMatrixIdentity();
+        GeomMatrixBuffer geomMatrixBuffer[100];
+        for (int i = 0; i < m_pCubeModelVector.size(); i++) {
+            geomMatrixBuffer[i].mWorldMatrix = XMMatrixTranslation(m_pCubeModelVector[i].pos.x, m_pCubeModelVector[i].pos.y, m_pCubeModelVector[i].pos.z);
+            geomMatrixBuffer[i].norm = geomMatrixBuffer[i].mWorldMatrix;
+            geomMatrixBuffer[i].shineSpeedTexIdNm = m_pCubeModelVector[i].shineSpeedIdNm;
+        }
 
         D3D11_SUBRESOURCE_DATA data;
-        data.pSysMem = &worldMatrixBuffer;
-        data.SysMemPitch = sizeof(worldMatrixBuffer);
+        data.pSysMem = &geomMatrixBuffer;
+        data.SysMemPitch = sizeof(geomMatrixBuffer);
         data.SysMemSlicePitch = 0;
 
-        hr = m_pDevice->CreateBuffer(&desc, &data, &m_pWorldMatrixBuffer);
-        if (SUCCEEDED(hr))
-            hr = m_pDevice->CreateBuffer(&desc, &data, &m_pWorldMatrixBuffer1);
+        hr = m_pDevice->CreateBuffer(&desc, &data, &m_pGeomMatrixBuffer);
         assert(SUCCEEDED(hr));
     }
     if (SUCCEEDED(hr)) {
@@ -583,17 +585,13 @@ bool Renderer::getState() {
         timeStart = timeCur;
     }
     t = (timeCur - timeStart) / 1000.0f;
-    WorldMatrixBuffer wmb;
-    wmb.shine.x = 100.0f;
-    wmb.mWorldMatrix = DirectX::XMMatrixMultiply(
-        DirectX::XMMatrixRotationY(t),
-        DirectX::XMMatrixTranslation(0.0f, 0.0f, -1.0f));
-    m_pDeviceContext->UpdateSubresource(m_pWorldMatrixBuffer, 0, NULL, &wmb, 0, 0);
-
-    wmb.mWorldMatrix = DirectX::XMMatrixMultiply(
-        DirectX::XMMatrixRotationY(-t),
-        DirectX::XMMatrixTranslation(0.0f, 0.0f, 1.0f));
-    m_pDeviceContext->UpdateSubresource(m_pWorldMatrixBuffer1, 0, NULL, &wmb, 0, 0);
+    GeomMatrixBuffer gmb[100];
+    for (std::size_t i = 0; i < m_pCubeModelVector.size(); ++i) {
+        gmb[i].mWorldMatrix = XMMatrixRotationX(t) * XMMatrixTranslation(m_pCubeModelVector[i].pos.x, m_pCubeModelVector[i].pos.y, m_pCubeModelVector[i].pos.z);
+        gmb[i].norm = gmb[i].mWorldMatrix;
+        gmb[i].shineSpeedTexIdNm = m_pCubeModelVector[i].shineSpeedIdNm;
+    }
+    m_pDeviceContext->UpdateSubresource(m_pGeomMatrixBuffer, 0, NULL, &gmb, 0, 0);
 
 
     float moveSpeed = 0.05f;
@@ -649,6 +647,11 @@ bool Renderer::getState() {
         m_width / (FLOAT)m_height,
         100.0f, 0.01f);
 
+    m_cubeIndexies.clear();
+    for (int i = 0; i < 100; i++) {
+        m_cubeIndexies.push_back(i);
+    }
+
     D3D11_MAPPED_SUBRESOURCE subresource;
     hr = m_pDeviceContext->Map(m_pSceneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource);
     assert(SUCCEEDED(hr));
@@ -656,6 +659,8 @@ bool Renderer::getState() {
     if (SUCCEEDED(hr)) {
         SceneMatrixBuffer& sceneBuffer = *reinterpret_cast<SceneMatrixBuffer*>(subresource.pData);
         sceneBuffer.mViewProjectionMatrix = XMMatrixMultiply(mView, mProjection);
+        for (int i = 0; i < m_cubeIndexies.size(); i++)
+            sceneBuffer.indexBuffer[i] = XMINT4(m_cubeIndexies[i], 0, 0, 0);
         sceneBuffer.cameraPosition.x = pov.x;
         sceneBuffer.cameraPosition.y = pov.y;
         sceneBuffer.cameraPosition.z = pov.z;
@@ -670,13 +675,6 @@ bool Renderer::getState() {
 
 bool Renderer::render() {
     m_pDeviceContext->ClearState();
-
-    ID3D11RenderTargetView* views[] = { m_pBackBufferRTV };
-    m_pDeviceContext->OMSetRenderTargets(1, views, m_pDepthBufferDSV);
-
-    static const FLOAT BackColor[4] = { 0.75f, 0.25f, 0.25f, 1.0f };
-    m_pDeviceContext->ClearRenderTargetView(m_pBackBufferRTV, BackColor);
-    m_pDeviceContext->ClearDepthStencilView(m_pDepthBufferDSV, D3D11_CLEAR_DEPTH, 0.0f, 0);
 
     D3D11_VIEWPORT vp;
     vp.TopLeftX = 0;
@@ -701,7 +699,7 @@ bool Renderer::render() {
     m_pDeviceContext->RSSetState(m_pRasterizerState);
     m_pDeviceContext->OMSetDepthStencilState(m_pDepthState, 0);
     ID3D11SamplerState* samplers[] = { m_pSampler };
-    m_pDeviceContext->PSSetSamplers(0, 1, samplers);
+    m_pDeviceContext->PSSetSamplers(0, 1, &m_pSampler);
 
     ID3D11ShaderResourceView* resources[] = { m_textureArray[0].GetTexture(), m_textureArray[1].GetTexture() };
     m_pDeviceContext->PSSetShaderResources(0, 2, resources);
@@ -716,16 +714,15 @@ bool Renderer::render() {
     m_pDeviceContext->IASetInputLayout(m_pInputLayout);
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     m_pDeviceContext->VSSetShader(m_pVertexShader, nullptr, 0);
-    m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pWorldMatrixBuffer);
+    m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pGeomMatrixBuffer);
     m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pSceneMatrixBuffer);
-    m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pWorldMatrixBuffer);
+    m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pGeomMatrixBuffer);
     m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pSceneMatrixBuffer);
     m_pDeviceContext->PSSetConstantBuffers(2, 1, &m_pLightMatrixBuffer);
     m_pDeviceContext->PSSetShader(m_pPixelShader, nullptr, 0);
-    m_pDeviceContext->DrawIndexed(36, 0, 0);
 
-    m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pWorldMatrixBuffer1);
-    m_pDeviceContext->DrawIndexed(36, 0, 0);
+    m_pDeviceContext->DrawIndexedInstanced(36, (UINT)m_cubeIndexies.size(), 0, 0, 0);
+
     m_pCubeMap->render(m_pDeviceContext);
     m_pDeviceContext->IASetIndexBuffer(m_pTransparentIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     ID3D11Buffer* vertexBuffers[] = { m_pTransparentVertexBuffer };
@@ -742,13 +739,23 @@ bool Renderer::render() {
 
     m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pTransparentWorldBuffer);
     m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pTransparentWorldBuffer);
-    m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pTransparentSceneBuffer);
+    m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pSceneMatrixBuffer);
+
+    m_pDeviceContext->PSSetConstantBuffers(2, 1, &m_pLightMatrixBuffer);
+
     m_pDeviceContext->PSSetShader(m_pTransparentPixelShader, NULL, 0);
     m_pDeviceContext->DrawIndexed(static_cast<UINT>(coloredPlaneIndices.size()), 0, 0);
 
     m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pTransparentWorldBuffer1);
     m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pTransparentWorldBuffer1);
     m_pDeviceContext->DrawIndexed(static_cast<UINT>(coloredPlaneIndices.size()), 0, 0);
+
+    ID3D11RenderTargetView* views[] = { m_pBackBufferRTV };
+    m_pDeviceContext->OMSetRenderTargets(1, views, m_pDepthBufferDSV);
+
+    static const FLOAT BackColor[4] = { 0.75f, 0.25f, 0.25f, 1.0f };
+    m_pDeviceContext->ClearRenderTargetView(m_pBackBufferRTV, BackColor);
+    m_pDeviceContext->ClearDepthStencilView(m_pDepthBufferDSV, D3D11_CLEAR_DEPTH, 0.0f, 0);
 
     HRESULT hr = m_pSwapChain->Present(1, 0);
     assert(SUCCEEDED(hr));
@@ -770,8 +777,6 @@ void Renderer::deviceCleanup() {
     SAFE_RELEASE(m_pDevice);
 
     SAFE_RELEASE(m_pRasterizerState);
-    SAFE_RELEASE(m_pWorldMatrixBuffer);
-    SAFE_RELEASE(m_pWorldMatrixBuffer1);
     SAFE_RELEASE(m_pSceneMatrixBuffer);
     SAFE_RELEASE(m_pSampler);
 
@@ -792,6 +797,7 @@ void Renderer::deviceCleanup() {
     SAFE_RELEASE(m_pDepthBuffer);
     SAFE_RELEASE(m_pDepthBufferDSV);
     SAFE_RELEASE(m_pLightMatrixBuffer);
+    SAFE_RELEASE(m_pGeomMatrixBuffer);
     for (auto t : m_textureArray) {
         t.Release();
     }

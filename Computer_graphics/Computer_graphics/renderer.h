@@ -27,9 +27,16 @@ struct WorldMatrixBuffer {
 	DirectX::XMFLOAT4 shine;
 };
 
+struct GeomMatrixBuffer {
+	DirectX::XMMATRIX mWorldMatrix;
+	DirectX::XMMATRIX norm;
+	DirectX::XMFLOAT4 shineSpeedTexIdNm;
+};
+
 struct SceneMatrixBuffer {
 	XMMATRIX mViewProjectionMatrix;
 	DirectX::XMFLOAT4 cameraPosition;
+	DirectX::XMINT4 indexBuffer[100];
 };
 
 struct LightMatrixBuffer {
@@ -65,8 +72,9 @@ private:
 
 	ID3D11InputLayout* m_pInputLayout = nullptr;
 
-	ID3D11Buffer* m_pWorldMatrixBuffer = nullptr;
-	ID3D11Buffer* m_pWorldMatrixBuffer1 = nullptr;
+	//ID3D11Buffer* m_pWorldMatrixBuffer = nullptr;
+	//ID3D11Buffer* m_pWorldMatrixBuffer1 = nullptr;
+	ID3D11Buffer* m_pGeomMatrixBuffer = nullptr;
 
 	ID3D11Buffer* m_pSceneMatrixBuffer = nullptr;
 	ID3D11Buffer* m_pLightMatrixBuffer = nullptr;
@@ -101,6 +109,13 @@ private:
 	CubeMap* m_pCubeMap = nullptr;
 	std::vector<Texture> m_textureArray;
 	std::shared_ptr<Lights> m_pLights;
+	std::vector<int> m_cubeIndexies;
+	struct CubeModel
+	{
+		DirectX::XMFLOAT4 pos;
+		DirectX::XMFLOAT4 shineSpeedIdNm;
+	};
+	std::vector<CubeModel> m_pCubeModelVector;
 
 	HRESULT setupBackBuffer();
 	HRESULT initScene();
